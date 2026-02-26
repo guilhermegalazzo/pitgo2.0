@@ -10,7 +10,7 @@ export function BottomNav() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#0D0D1F]/90 backdrop-blur-2xl border-t border-white/5 py-3 px-8 md:hidden z-50">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-[#0D0D1F]/95 backdrop-blur-2xl border-t border-white/5 py-3 px-8 z-50">
       <div className="flex justify-between items-center max-w-sm mx-auto">
         <Link href="/" className={`flex flex-col items-center gap-1.5 transition-all ${isActive("/") ? "text-primary scale-110" : "text-white/30"}`}>
           <Home className="h-5 w-5" />

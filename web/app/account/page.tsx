@@ -61,7 +61,7 @@ export default function AccountPage() {
                 </p>
             </div>
          </div>
-         <Logo className="opacity-20 hidden sm:block" />
+         <Logo className="opacity-20 hidden" />
       </div>
 
       <div className="px-6 py-8 space-y-6">

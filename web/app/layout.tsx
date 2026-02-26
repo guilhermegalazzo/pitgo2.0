@@ -50,14 +50,16 @@ export default function RootLayout({
           <link rel="icon" href="/favicon.ico" sizes="any" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-primary/20`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-primary/20 bg-[#06060F]`}
         >
-          <GoogleMapsProvider>
-            <main className="min-h-screen relative shadow-2xl sm:border-x border-border bg-[#0D0D1F]">
-              {children}
-              <BottomNav />
-            </main>
-          </GoogleMapsProvider>
+          <div className="mx-auto w-full max-w-[430px] min-h-screen relative shadow-[0_0_80px_rgba(0,0,0,0.8)] border-x border-white/5">
+            <GoogleMapsProvider>
+              <main className="min-h-screen relative bg-[#0D0D1F] overflow-x-hidden">
+                {children}
+                <BottomNav />
+              </main>
+            </GoogleMapsProvider>
+          </div>
         </body>
       </html>
     </ClerkProvider>
