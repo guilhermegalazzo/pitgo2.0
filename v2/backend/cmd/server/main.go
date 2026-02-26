@@ -45,6 +45,11 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	// Run migrations
+	if err := database.RunMigrations(cfg.Database.DSN()); err != nil {
+		logger.Fatal().Err(err).Msg("Failed to run migrations")
+		return
+	}
 	// Database
 	dbPool, err := database.NewPostgresPool(cfg.Database)
 	if err != nil {
