@@ -18,6 +18,7 @@ type Handlers struct {
 
 func Setup(r *gin.Engine, clerkAuth *auth.ClerkAuth, rlCfg middleware.RateLimiterConfig, h Handlers) {
 	// Global middleware
+	r.Use(middleware.CORSMiddleware())
 	r.Use(middleware.ErrorHandler())
 	r.Use(middleware.RequestIDMiddleware())
 	r.Use(middleware.LoggerMiddleware())

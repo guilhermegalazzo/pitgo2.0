@@ -19,6 +19,7 @@ type AppConfig struct {
 }
 
 type DatabaseConfig struct {
+	URL      string // Single DATABASE_URL for Render/production
 	Host     string
 	Port     string
 	User     string
@@ -48,6 +49,10 @@ type RateConfig struct {
 }
 
 func (d DatabaseConfig) DSN() string {
+	// Use DATABASE_URL if available (Render, Railway, etc.)
+	if d.URL != "" {
+		return d.URL
+	}
 	return "postgres://" + d.User + ":" + d.Password + "@" + d.Host + ":" + d.Port + "/" + d.Name + "?sslmode=" + d.SSLMode
 }
 
@@ -79,6 +84,7 @@ func Load() (*Config, error) {
 			Env:  viper.GetString("APP_ENV"),
 		},
 		Database: DatabaseConfig{
+			URL:      viper.GetString("DATABASE_URL"),
 			Host:     viper.GetString("DB_HOST"),
 			Port:     viper.GetString("DB_PORT"),
 			User:     viper.GetString("DB_USER"),
