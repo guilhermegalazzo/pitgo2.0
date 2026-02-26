@@ -1,7 +1,8 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@/lib/supabase/server";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 const getStripe = () => {
   return new Stripe(process.env.STRIPE_SECRET_KEY || "", {
@@ -36,21 +37,20 @@ export async function POST(req: Request) {
       const orderId = session.metadata?.orderId;
 
       if (orderId) {
-        const supabase = await createClient();
-        if (supabase) {
-            const { error } = await supabase
-              .from("orders")
-              .update({ status: "confirmed" })
-              .eq("id", orderId);
-
-            if (error) {
-              console.error("Error updating order status:", error);
-              return NextResponse.json({ error: "Failed to update order" }, { status: 500 });
-            }
-            console.log(`Order ${orderId} fully paid and confirmed!`);
-        } else {
-            console.error("Webhook Error: Supabase client could not be initialized.");
-            return NextResponse.json({ error: "Configuration Error" }, { status: 500 });
+        try {
+          // Call Go backend to update request status
+          const res = await fetch(`${API_URL}/api/v1/requests/${orderId}/accept`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          });
+          if (!res.ok) {
+            console.error("Error updating request status:", await res.text());
+            return NextResponse.json({ error: "Failed to update order" }, { status: 500 });
+          }
+          console.log(`Order ${orderId} fully paid and confirmed!`);
+        } catch (err) {
+          console.error("Error calling backend:", err);
+          return NextResponse.json({ error: "Backend error" }, { status: 500 });
         }
       }
       break;

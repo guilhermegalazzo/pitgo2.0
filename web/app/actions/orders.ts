@@ -1,60 +1,65 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
-import { auth } from "@clerk/nextjs/server";
+import { apiGet, apiPost } from "@/lib/api";
+
+interface ServiceRequest {
+  id: string;
+  customer_id: string;
+  service_id: string;
+  status: string;
+  category: string;
+  description: string;
+  photo_url: string;
+  address_id: string;
+  latitude: number;
+  longitude: number;
+  scheduled_at: string;
+  notes: string;
+  total_price: number;
+  created_at: string;
+  updated_at: string;
+}
 
 export async function getOrders() {
   try {
-    const { userId } = await auth();
-    if (!userId) return [];
+    const requests = await apiGet<ServiceRequest[]>("/api/v1/requests");
+    if (!requests) return [];
 
-    const supabase = await createClient();
-    if (!supabase) return [];
-
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*, shops(name, image_url)")
-      .eq("customer_id", userId)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Orders fetch error:", error);
-      return [];
-    }
-
-    return (data || []).map(order => ({
-        ...order,
-        shop: order.shops
+    // Map to the format the frontend expects
+    return requests.map(req => ({
+      id: req.id,
+      status: req.status,
+      total_amount: req.total_price / 100, // cents to dollars
+      created_at: req.created_at,
+      shop: {
+        name: req.category ? `${req.category.charAt(0).toUpperCase() + req.category.slice(1)} Service` : "Service",
+        image_url: req.photo_url || "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?q=80&w=2070&auto=format&fit=crop",
+      },
     }));
   } catch (err) {
+    console.error("getOrders error:", err);
     return [];
   }
 }
 
-export async function createOrder(shopId: string, serviceId: string, totalAmount: number) {
-    try {
-        const { userId } = await auth();
-        if (!userId) throw new Error("Unauthorized");
+export async function createOrder(serviceId: string, _selectedServiceId: string, price: number) {
+  try {
+    const request = await apiPost<ServiceRequest>("/api/v1/requests", {
+      service_id: serviceId,
+      category: "wash",
+      description: "Service booking",
+      latitude: 0,
+      longitude: 0,
+      scheduled_at: new Date().toISOString(),
+      notes: "",
+      total_price: Math.round(price * 100), // dollars to cents
+    });
 
-        const supabase = await createClient();
-        if (!supabase) throw new Error("Supabase error");
-
-        const { data, error } = await supabase
-            .from("orders")
-            .insert([
-                {
-                    customer_id: userId,
-                    shop_id: shopId,
-                    total_amount: totalAmount,
-                    status: "pending"
-                }
-            ])
-            .select()
-            .single();
-
-        if (error) throw error;
-        return { success: true, orderId: data.id };
-    } catch (error: any) {
-        return { error: error.message };
+    if (request) {
+      return { success: true, orderId: request.id };
     }
+    return { error: "Failed to create order" };
+  } catch (err: any) {
+    return { error: err.message || "Failed to create order" };
+  }
 }
