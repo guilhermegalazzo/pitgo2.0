@@ -1,0 +1,21 @@
+{
+  "name": "PitGo Automotive Services",
+  "short_name": "PitGo",
+  "description": "Premium Automotive Services Marketplace",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FF7A00",
+  "icons": [
+    {
+      "src": "https://pitgo.app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://pitgo.app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
