@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS dispatches;
+DROP TABLE IF EXISTS request_items;
+DROP TABLE IF EXISTS service_requests;
+DROP TABLE IF EXISTS price_modifiers;
+DROP TABLE IF EXISTS services;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS provider_details;
+DROP TABLE IF EXISTS profiles;
+DROP TABLE IF EXISTS users;

@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pitgo Marketplace - Production Ready
 
-## Getting Started
+Pitgo is a premium marketplace for automotive services, built with a modern and scalable architecture.
 
-First, run the development server:
+## Tech Stack
+- **Backend:** Go (Gin) with Clean Architecture.
+- **Frontend Admin:** Next.js with TypeScript.
+- **Mobile:** React Native (Expo) with Expo Router.
+- **Database:** PostgreSQL.
+- **Cache:** Redis.
+- **Auth:** Clerk (JWT validated).
+- **Queue:** Flexible abstraction (In-memory/Local).
 
+## Project Structure
+- `/v2/backend`: Go backend following Clean Architecture.
+- `/web`: Next.js Admin dashboard.
+- `/mobile`: React Native Expo mobile app.
+- `/k8s`: Kubernetes manifests for production deployment.
+- `docker-compose.yml`: Local full-stack environment.
+
+## Running Locally
+
+### 1. Prerequisites
+- Docker & Docker Compose
+- Go 1.22+
+- Node.js 18+
+
+### 2. Start Services
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker-compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Setup Environment
+Add the following to your `.env` (Backend, Web, and Mobile):
+- `CLERK_PUBLISHABLE_KEY` / `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `CLERK_JWKS_URL`
+- `CLERK_ISSUER`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture Highlights
+- **Clean Architecture:** Domain/UseCase/Repository/Infrastructure isolation.
+- **JSON Structured Logging:** Production-ready logs using `zerolog`.
+- **Global Error Handling:** Recovery middleware for all API requests.
+- **Rate Limiting:** IP and User-based limiting.
+- **Healthchecks:** Native endpoints for orchestration.
